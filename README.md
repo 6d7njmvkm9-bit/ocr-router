@@ -15,9 +15,9 @@
 
 ## 安装
 
-git clone https://github.com/6d7njmvkm9-bit/ocr-router.git ~/.workbuddy/legal-skills/ocr-router
-
 ```bash
+git clone https://github.com/6d7njmvkm9-bit/ocr-router.git
+cd ocr-router
 cp backends/legal-ocr-engine/config/.env.example backends/legal-ocr-engine/config/.env
 # 编辑 .env，填入 PaddleOCR 或 MinerU 的 API 凭证
 cd backends/legal-ocr-engine
@@ -27,20 +27,22 @@ uv run scripts/convert.py checktoken
 ## 使用
 
 日常读取：
+
 ```bash
 python3 scripts/update-read-session.py --work-dir "工作目录" --source-scope "材料路径" --read-item "_read_item.json"
 ```
 
 正式门禁：
+
 ```bash
 python3 scripts/validate-material-reading.py --case-dir "案件目录" --require-scope strategy
 ```
 
-五级 scope：inventory -> preliminary -> legal-research -> strategy -> formal-document。高风险输出前必须显式指定 strategy 或 formal-document。
+五级 scope：inventory -> preliminary -> legal-research -> strategy -> formal-document。
 
 ## 架构
 
-用户提交材料 -> 判断读取路径 -> legal-ocr-engine 执行转换（PaddleOCR + MinerU） -> _read_item.json -> read-session.json -> 按映射表升级 -> material_inventory.json -> validate -> gate-result.json -> 下游技能
+用户提交材料 -> 判断读取路径 -> legal-ocr-engine 执行转换 -> _read_item.json -> read-session.json -> 按映射表升级 -> material_inventory.json -> validate -> gate-result.json -> 下游技能
 
 ## 目录
 
