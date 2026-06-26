@@ -1,16 +1,22 @@
 # 变更日志
 
-## [1.0.4] - 2026-06-26
+## [1.0.4] - 2026-06-26 — OCR 路由改为 PaddleOCR 优先与明示读取路径
 
 ### 调整
 
-- OCR 后端统一改为 PaddleOCR 优先：凡 PaddleOCR 支持的 PDF、图片、扫描件、截图、票据等输入，`direct-ocr` 和 `complex-parse` 均按 PaddleOCR -> MinerU 回退。
-- Office、远程网页、当前 PaddleOCR 协议不能提交的远程 URL 仍走 MinerU，不再表述为 MinerU 优先规则。
-- 本地 PDF/图片在双后端可用时不再报错要求声明路径；文档层只保留 `direct-ocr` 与 `complex-parse` 两条明示读取路径。
+- OCR 后端规则统一为 PaddleOCR 优先：凡 PaddleOCR 支持的 PDF、图片、扫描件、截图、票据等输入，优先使用 PaddleOCR。
+- 文档层只保留 `direct-ocr`（普通 OCR）和 `complex-parse`（复杂文档解析）两条明示读取路径；不再暴露或提示 `--backend auto`。
+- MinerU 仅在 PaddleOCR 不支持格式/来源、当前协议无法提交该来源、失败、空结果、缺页或乱码时，作为切换后端使用。
+- Read 看图仅作为视觉复核步骤，不作为默认读取路径。
+- 普通读取保持轻量：不默认全量盘点、不默认生成完整 `material_inventory`、不默认运行门禁校验。
 
 ### 验证
 
-- 更新路由测试：`direct-ocr`、`complex-parse` 本地 PDF 均为 PaddleOCR -> MinerU；Office 文件仍为 MinerU；显式后端不被改写。
+- 路由测试已通过：Ran 6 tests OK
+  - `direct-ocr`、`complex-parse` 本地 PDF 均为 PaddleOCR → MinerU
+  - Office 文件仍为 MinerU
+  - 显式指定后端不被 route_path 改写
+  - MinerU 无 Token 时仅用 PaddleOCR
 
 ## [1.0.3] - 2026-06-25
 
